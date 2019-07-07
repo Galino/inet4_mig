@@ -12,6 +12,23 @@ OSPFv3Process::OSPFv3Process()
 
 OSPFv3Process::~OSPFv3Process()
 {
+    std::cout << "VOLAM TO Z ROUTERU  " << this->getRouterID() << endl;
+    long instanceCount = instances.size();
+    for (long i = 0; i < instanceCount; i++) {
+        delete instances[i];
+    }
+    long routeCount = routingTableIPv4.size();
+    for (long k = 0; k < routeCount; k++) {
+        delete routingTableIPv4[k];
+    }
+    routeCount = routingTableIPv6.size();
+    for (long k = 0; k < routeCount; k++) {
+        delete routingTableIPv6[k];
+    }
+
+    this->clearTimer(ageTimer);
+    delete ageTimer;
+
 }
 
 void OSPFv3Process::initialize(int stage){
@@ -422,7 +439,6 @@ void OSPFv3Process::parseConfig(cXMLElement* interfaceConfig)
                             const char * addr6c = ipv6Rec->getNodeValue();
                             std::string add6 = addr6c;
                             std::string prefix6 = add6.substr(0, add6.find("/"));
-                            Ipv6InterfaceData * intfData6 = myInterface->ipv6Data();
                             int prefLength;
                             Ipv6Address address6;
                             if (!(address6.tryParseAddrWithPrefix(addr6c, prefLength)))

@@ -20,6 +20,32 @@ OSPFv3Area::OSPFv3Area(Ipv4Address areaID, OSPFv3Instance* parent, OSPFv3AreaTyp
 
 OSPFv3Area::~OSPFv3Area()
 {
+    int interfaceNum = interfaceList.size();
+    for (int i = 0; i < interfaceNum; i++) {
+        delete (interfaceList[i]);
+    }
+    interfaceList.clear();
+    long lsaCount = routerLSAList.size();
+    for (long j = 0; j < lsaCount; j++) {
+        delete routerLSAList[j];
+    }
+    routerLSAList.clear();
+    lsaCount = networkLSAList.size();
+    for (long k = 0; k < lsaCount; k++) {
+        delete networkLSAList[k];
+    }
+    networkLSAList.clear();
+    lsaCount = interAreaPrefixLSAList.size();
+    for (long m = 0; m < lsaCount; m++) {
+        delete interAreaPrefixLSAList[m];
+    }
+    interAreaPrefixLSAList.clear();
+    lsaCount = intraAreaPrefixLSAList.size();
+    for (long m = 0; m < lsaCount; m++) {
+        delete intraAreaPrefixLSAList[m];
+    }
+    intraAreaPrefixLSAList.clear();
+
 }
 
 void OSPFv3Area::init()

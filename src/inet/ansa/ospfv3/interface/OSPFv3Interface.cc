@@ -57,6 +57,26 @@ OSPFv3Interface::OSPFv3Interface(const char* name, cModule* routerModule, OSPFv3
 OSPFv3Interface::~OSPFv3Interface()
 {
 
+    this->getArea()->getInstance()->getProcess()->clearTimer(helloTimer);
+    this->getArea()->getInstance()->getProcess()->clearTimer(waitTimer);
+    this->getArea()->getInstance()->getProcess()->clearTimer(acknowledgementTimer);
+    delete helloTimer;
+    delete waitTimer;
+    delete acknowledgementTimer;
+    if (previousState != nullptr) {
+        delete previousState;
+    }
+    delete state;
+    long neighborCount = neighbors.size();
+    for (long i = 0; i < neighborCount; i++) {
+        delete neighbors[i];
+    }
+    long lsaCount = linkLSAList.size();
+    for (long j = 0; j < lsaCount; j++) {
+        delete linkLSAList[j];
+    }
+    linkLSAList.clear();
+
 }//destructor
 
 void OSPFv3Interface::processEvent(OSPFv3Interface::OSPFv3InterfaceEvent event)
@@ -709,6 +729,7 @@ void OSPFv3Interface::processDDPacket(Packet* packet){
                     neighbor->retransmitDatabaseDescriptionPacket();
                 }
             }
+            delete(packet);
         }
         break;
 
@@ -739,6 +760,7 @@ void OSPFv3Interface::processDDPacket(Packet* packet){
                     }
                 }
             }
+            delete(packet);
         }
         break;
 
@@ -860,7 +882,6 @@ void OSPFv3Interface::processLSR(Packet* packet, OSPFv3Neighbor* neighbor){
         }
 
         if(!error) {
-            int updateCount = lsas.size();
             int hopLimit = (this->getType() == OSPFv3Interface::VIRTUAL_TYPE) ? VIRTUAL_LINK_TTL : 1;
 
             Packet* updatePacket = this->prepareUpdatePacket(lsas);

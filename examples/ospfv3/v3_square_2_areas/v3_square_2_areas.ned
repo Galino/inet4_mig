@@ -25,8 +25,11 @@ network v3_square_2_areas
                 config = xml("<config>"+
 //                            "<interface among='Router1 Router2' address='10.10.10.x' netmask='255.255.255.0' />"+
 //                            "<interface among='Router2 Router3' address='10.10.20.x' netmask='255.255.255.0' />"+
-                             "<interface among='Router1 Host1' address='172.16.10.x' netmask='255.255.255.0' />"+
+//                             "<interface among='Router1 Host1' address='172.16.10.x' netmask='255.255.255.0' />"+
                             "</config>");
+                addStaticRoutes = false;
+                addDefaultRoutes = false;
+                addSubnetRoutes = false;
                 @display("p=147,54");
         }
         Router1: Ospfv3Router {
